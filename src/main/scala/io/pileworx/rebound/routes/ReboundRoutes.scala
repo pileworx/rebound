@@ -1,6 +1,6 @@
 package io.pileworx.rebound.routes
 
-import akka.http.scaladsl.model.StatusCodes.BadRequest
+import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentType, HttpCharsets, HttpEntity, MediaType, Uri}
 import akka.http.scaladsl.server.Directives.{get, _}
 import akka.http.scaladsl.server.Route
@@ -14,15 +14,36 @@ object ReboundRoutes extends AkkaImplicits {
 
   val routes: Route = path(RemainingPath) { rPath =>
     parameterMap { params: Map[String, String] =>
+      def badRequest = complete(BadRequest, """{"status":"BAD REQUEST", "message":"No mocked data found"}""")
       val key: String = getPath(rPath, params)
-      get {
-        if (verb(GET).contains(key)) {
-          val mock = verb(GET)(key)
-          complete(mock.status -> HttpEntity(getContentType(mock), mock.response))
-        } else {
-          complete(BadRequest, """{"status":"BAD REQUEST", "message":"No mocked data found"}""")
+      concat(
+        get {
+          if (verb(GET).contains(key)) {
+            val mock = verb(GET)(key)
+            complete(mock.status -> HttpEntity(getContentType(mock), mock.response))
+          } else {
+            badRequest
+          }
+        },
+        put {
+          complete(MethodNotAllowed)
+        },
+        post {
+          complete(MethodNotAllowed)
+        },
+        head {
+          complete(MethodNotAllowed)
+        },
+        patch {
+          complete(MethodNotAllowed)
+        },
+        delete {
+          complete(MethodNotAllowed)
+        },
+        options {
+          complete(MethodNotAllowed)
         }
-      }
+      )
     }
   }
 
