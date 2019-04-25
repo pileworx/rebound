@@ -1,11 +1,19 @@
+lazy val reboundVersion  = "1.0.0-SNAPSHOT"
 lazy val akkaHttpVersion = "10.1.7"
 lazy val akkaVersion     = "2.5.21"
 
-lazy val root = (project in file(".")).
-  settings(
+lazy val root = (project in file("."))
+  .enablePlugins(JavaAppPackaging)
+  .settings(
+    packageName in Docker := "pileworx/rebound",
+    version in Docker := reboundVersion,
+    dockerExposedPorts := Seq(8080)
+  )
+  .settings(
     inThisBuild(List(
       organization    := "io.pileworx",
       scalaVersion    := "2.12.8",
+      version         := reboundVersion,
       scalacOptions   := Seq("-feature", "-deprecation", "-encoding", "utf8")
     )),
     name := """rebound""",
