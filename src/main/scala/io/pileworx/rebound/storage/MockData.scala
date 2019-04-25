@@ -13,15 +13,18 @@ object MockData {
   val DELETE = "DELETE"
   val OPTION = "OPTION"
 
-  var verb: mutable.Map[String, mutable.Map[String, DefineMockCmd]] = initStorage()
+  private var verb: mutable.Map[String, mutable.Map[String, DefineMockCmd]] = initStorage()
+
+  def getData(v: String, k: String): Option[DefineMockCmd] = {
+    if (!verb(v).contains(k)) return None
+    Some(verb(v)(k))
+  }
 
   def add(data: DefineMockCmd): StatusCode = {
-    if (verb.contains(data.method)) {
-      verb(data.method) += makeKey(data) -> data
-      Accepted
-    } else {
-      BadRequest
-    }
+    if (!verb.contains(data.method)) return BadRequest
+
+    verb(data.method) += makeKey(data) -> data
+    Accepted
   }
 
   def reset(): Unit = {
@@ -54,5 +57,5 @@ case class DefineMockCmd(method: String,
                          path: String,
                          qs: Option[String],
                          status: Int,
-                         response: String,
+                         response: Option[String],
                          contentType: String)
