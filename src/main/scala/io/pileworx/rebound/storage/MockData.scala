@@ -11,7 +11,7 @@ object MockData {
   val HEAD = "HEAD"
   val PATCH = "PATCH"
   val DELETE = "DELETE"
-  val OPTION = "OPTION"
+  val OPTIONS = "OPTIONS"
 
   private var verb: mutable.Map[String, mutable.Map[String, DefineMockCmd]] = initStorage()
 
@@ -48,7 +48,7 @@ object MockData {
       HEAD -> mutable.Map[String, DefineMockCmd](),
       PATCH -> mutable.Map[String, DefineMockCmd](),
       DELETE -> mutable.Map[String, DefineMockCmd](),
-      OPTION -> mutable.Map[String, DefineMockCmd]()
+      OPTIONS -> mutable.Map[String, DefineMockCmd]()
     )
   }
 }
