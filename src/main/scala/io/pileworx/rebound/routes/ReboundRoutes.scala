@@ -7,10 +7,9 @@ import akka.http.scaladsl.server.{Route, StandardRoute}
 import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import io.pileworx.rebound.AkkaImplicits
-import io.pileworx.rebound.storage.DefineMockCmd
-import io.pileworx.rebound.storage.MockData._
+import io.pileworx.rebound.storage.{DefineMockCmd, MockData}
 
-object ReboundRoutes extends AkkaImplicits {
+class ReboundRoutes(mockData: MockData) extends AkkaImplicits {
 
   private val badRequest: StandardRoute = complete(BadRequest, """{"status":"BAD REQUEST", "message":"No mocked data found"}""")
 
@@ -18,18 +17,18 @@ object ReboundRoutes extends AkkaImplicits {
     parameterMap { params: Map[String, String] =>
       val key: String = getPath(rPath, params)
       concat(
-        get { respond(GET, key).getOrElse(badRequest) },
-        put { respond(PUT, key).getOrElse(badRequest) },
-        post { respond(POST, key).getOrElse(badRequest) },
+        get { respond(MockData.GET, key).getOrElse(badRequest) },
+        put { respond(MockData.PUT, key).getOrElse(badRequest) },
+        post { respond(MockData.POST, key).getOrElse(badRequest) },
         head { complete(MethodNotAllowed) },
-        patch { respond(PATCH, key).getOrElse(badRequest) },
-        delete { respond(DELETE, key).getOrElse(badRequest) },
+        patch { respond(MockData.PATCH, key).getOrElse(badRequest) },
+        delete { respond(MockData.DELETE, key).getOrElse(badRequest) },
         options { complete(MethodNotAllowed) }
       )
     }
   }
 
-  private def respond(v: String, k:String): Option[StandardRoute] = getData(v,k) match {
+  private def respond(v: String, k:String): Option[StandardRoute] = mockData.getData(v,k) match {
     case Some(mock) => Some(complete(mock.status -> HttpEntity(getContentType(mock), mock.response.getOrElse(""))))
     case _ => None
   }

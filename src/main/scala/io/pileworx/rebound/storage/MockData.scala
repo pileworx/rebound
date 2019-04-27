@@ -3,17 +3,11 @@ package io.pileworx.rebound.storage
 import akka.http.scaladsl.model.StatusCode
 import akka.http.scaladsl.model.StatusCodes.{Accepted, BadRequest}
 import scala.collection.mutable
+import scala.collection.immutable.Map
 
-object MockData {
-  val GET = "GET"
-  val PUT = "PUT"
-  val POST = "POST"
-  val HEAD = "HEAD"
-  val PATCH = "PATCH"
-  val DELETE = "DELETE"
-  val OPTIONS = "OPTIONS"
+class MockData(engine: TemplateEngine) {
 
-  private var verb: mutable.Map[String, mutable.Map[String, DefineMockCmd]] = initStorage()
+  private var verb = initStorage()
 
   def getData(v: String, k: String): Option[DefineMockCmd] = {
     if (!verb(v).contains(k)) return None
@@ -23,7 +17,15 @@ object MockData {
   def add(data: DefineMockCmd): StatusCode = {
     if (!verb.contains(data.method)) return BadRequest
 
-    verb(data.method) += makeKey(data) -> data
+    val processed = data.response match {
+      case Some(response) => data.values match {
+        case Some(values) => data.copy(response = Some(engine.process(response, values)))
+        case None => data.copy(response = Some(engine.process(response, Map())))
+      }
+      case None => data
+    }
+
+    verb(processed.method) += makeKey(processed) -> processed
     Accepted
   }
 
@@ -42,15 +44,25 @@ object MockData {
 
   private def initStorage() = {
     mutable.Map[String, mutable.Map[String, DefineMockCmd]](
-      GET -> mutable.Map[String, DefineMockCmd](),
-      PUT -> mutable.Map[String, DefineMockCmd](),
-      POST -> mutable.Map[String, DefineMockCmd](),
-      HEAD -> mutable.Map[String, DefineMockCmd](),
-      PATCH -> mutable.Map[String, DefineMockCmd](),
-      DELETE -> mutable.Map[String, DefineMockCmd](),
-      OPTIONS -> mutable.Map[String, DefineMockCmd]()
+      MockData.GET -> mutable.Map[String, DefineMockCmd](),
+      MockData.PUT -> mutable.Map[String, DefineMockCmd](),
+      MockData.POST -> mutable.Map[String, DefineMockCmd](),
+      MockData.HEAD -> mutable.Map[String, DefineMockCmd](),
+      MockData.PATCH -> mutable.Map[String, DefineMockCmd](),
+      MockData.DELETE -> mutable.Map[String, DefineMockCmd](),
+      MockData.OPTIONS -> mutable.Map[String, DefineMockCmd]()
     )
   }
+}
+
+object MockData {
+  val GET = "GET"
+  val PUT = "PUT"
+  val POST = "POST"
+  val HEAD = "HEAD"
+  val PATCH = "PATCH"
+  val DELETE = "DELETE"
+  val OPTIONS = "OPTIONS"
 }
 
 case class DefineMockCmd(method: String,
@@ -58,4 +70,5 @@ case class DefineMockCmd(method: String,
                          qs: Option[String],
                          status: Int,
                          response: Option[String],
-                         contentType: String)
+                         contentType: String,
+                         values: Option[Map[String, String]])

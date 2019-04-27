@@ -11,9 +11,9 @@ import io.pileworx.rebound.AkkaImplicits
 import io.pileworx.rebound.storage.{DefineMockCmd, MockData}
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
-object MockRoutes extends AkkaImplicits with SprayJsonSupport with DefaultJsonProtocol {
+class MockRoutes(mockdata: MockData) extends AkkaImplicits with SprayJsonSupport with DefaultJsonProtocol {
 
-  implicit val defineMockCmdFormat: RootJsonFormat[DefineMockCmd] = jsonFormat6(DefineMockCmd)
+  implicit val defineMockCmdFormat: RootJsonFormat[DefineMockCmd] = jsonFormat7(DefineMockCmd)
 
   val ACCEPTED_MESSAGE = """{"status":"ACCEPTED"}"""
   val SUCCESS_MESSAGE = """{"status":"SUCCESS"}"""
@@ -24,7 +24,7 @@ object MockRoutes extends AkkaImplicits with SprayJsonSupport with DefaultJsonPr
     concat(
       put {
         entity(as[DefineMockCmd]) { cmd =>
-          val resp = MockData.add(cmd)
+          val resp = mockdata.add(cmd)
           resp match {
             case Accepted => complete(resp -> HttpEntity(ContentTypes.`application/json`, ACCEPTED_MESSAGE))
             case BadRequest => complete(resp -> HttpEntity(ContentTypes.`application/json`, BAD_REQUEST_MESSAGE))
@@ -34,7 +34,7 @@ object MockRoutes extends AkkaImplicits with SprayJsonSupport with DefaultJsonPr
       },
       delete {
         complete {
-          MockData.reset()
+          mockdata.reset()
           HttpEntity(ContentTypes.`application/json`, SUCCESS_MESSAGE)
         }
       }
