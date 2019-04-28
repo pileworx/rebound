@@ -1,4 +1,5 @@
-# rebound
+rebound
+=======
 
 Mock server for isolated functional testing.
 
@@ -6,11 +7,13 @@ Licensed under the Apache 2 license.
 
 [![Build Status](https://travis-ci.org/marcuslange/rebound.svg?branch=develop)](https://travis-ci.org/marcuslange/rebound)
 
-####Getting Started
+Getting Started
+===============
 
 Docker image is available at pileworx/rebound on Docker Hub.
 
-####Usage
+Usage
+=====
 The server's default port is 8585.
 To create a response, PUT to /mock
 ```json
@@ -30,29 +33,35 @@ To create a response, PUT to /mock
   "propertyName":"this is my value"
  }
  ```
- ####Properties
+Properties
+==========
  
- #####method
+method
+------
  - Required
  
  HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
  
- #####path
+path
+----
  - Required
  
  URL Path.
  
- #####status
+status
+------
  - Required
  
  HTTP Status Code.
  
- #####qs
+qs
+--
  - Optional
  
  HTTP Query String.
  
- #####response
+response
+--------
  - Optional
  
  Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
@@ -71,12 +80,14 @@ To create a response, PUT to /mock
 }
 ```
  
- #####contentType
+contentType
+-----------
  - Required
  
  Value of Content-Type header.
  
- #####values
+values
+------
  - Optional
 
 Key-Value pairs to use in VTL
