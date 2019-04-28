@@ -1,4 +1,4 @@
-package io.pileworx.rebound.storage
+package io.pileworx.rebound.common.velocity
 
 import org.scalatest.{Matchers, WordSpec}
 

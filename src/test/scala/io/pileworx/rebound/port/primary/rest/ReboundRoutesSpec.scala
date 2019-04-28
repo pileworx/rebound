@@ -1,8 +1,8 @@
-package io.pileworx.rebound.routes
+package io.pileworx.rebound.port.primary.rest
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import io.pileworx.rebound.storage.{DefineMockCmd, MockData}
+import io.pileworx.rebound.application.{DefineMockCmd, MockQuery, ReboundDao, ReboundService}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 
@@ -36,10 +36,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
   "Rebound routes" should {
 
     "GET response with payload" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.GET, mKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.GET, mKey)).returning(Some(allCmd))
 
       Get(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -48,10 +48,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "GET response with payload by query string" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.GET, mQsKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.GET, mQsKey)).returning(Some(allCmd))
 
       Get(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -60,10 +60,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "GET with no response that doesn't match key" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.GET, mKey).returning(None)
+      (serviceMock.find _).when(MockQuery(ReboundDao.GET, mKey)).returning(None)
 
       Get(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -71,10 +71,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "PUT response with payload" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.PUT, mKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.PUT, mKey)).returning(Some(allCmd))
 
       Put(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -83,10 +83,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "PUT response with payload by query string" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.PUT, mQsKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.PUT, mQsKey)).returning(Some(allCmd))
 
       Put(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -95,10 +95,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "PUT with no response that doesn't match key" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.PUT, mKey).returning(None)
+      (serviceMock.find _).when(MockQuery(ReboundDao.PUT, mKey)).returning(None)
 
       Put(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -106,10 +106,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "POST response with payload" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.POST, mKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.POST, mKey)).returning(Some(allCmd))
 
       Post(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -118,10 +118,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "POST response with payload by query string" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.POST, mQsKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.POST, mQsKey)).returning(Some(allCmd))
 
       Post(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -130,10 +130,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "POST with no response that doesn't match key" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.POST, mKey).returning(None)
+      (serviceMock.find _).when(MockQuery(ReboundDao.POST, mKey)).returning(None)
 
       Post(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -141,8 +141,8 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "HEAD is not implemented" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
       Head(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.MethodNotAllowed
@@ -150,10 +150,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "PATCH response with payload" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.PATCH, mKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.PATCH, mKey)).returning(Some(allCmd))
 
       Patch(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -162,10 +162,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "PATCH response with payload by query string" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.PATCH, mQsKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.PATCH, mQsKey)).returning(Some(allCmd))
 
       Patch(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -174,10 +174,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "PATCH with no response that doesn't match key" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.PATCH, mKey).returning(None)
+      (serviceMock.find _).when(MockQuery(ReboundDao.PATCH, mKey)).returning(None)
 
       Patch(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -185,10 +185,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "DELETE response with payload" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.DELETE, mKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.DELETE, mKey)).returning(Some(allCmd))
 
       Delete(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -197,10 +197,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "DELETE response with payload by query string" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.DELETE, mQsKey).returning(Some(allCmd))
+      (serviceMock.find _).when(MockQuery(ReboundDao.DELETE, mQsKey)).returning(Some(allCmd))
 
       Delete(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -209,10 +209,10 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "DELETE with no response that doesn't match key" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
-      (dataMock.getData _).when(MockData.DELETE, mKey).returning(None)
+      (serviceMock.find _).when(MockQuery(ReboundDao.DELETE, mKey)).returning(None)
 
       Delete(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -220,8 +220,8 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     }
 
     "OPTIONS is not implemented" in {
-      val dataMock = stub[MockData]
-      val route = new ReboundRoutes(dataMock)
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
 
       Options(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.MethodNotAllowed

@@ -3,8 +3,10 @@ package io.pileworx.rebound
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import io.pileworx.rebound.routes.{MockRoutes, ReboundRoutes}
-import io.pileworx.rebound.storage.{MockData, TemplateEngine}
+import io.pileworx.rebound.application.{ReboundDao, ReboundService}
+import io.pileworx.rebound.common.akka.AkkaImplicits
+import io.pileworx.rebound.common.velocity.TemplateEngine
+import io.pileworx.rebound.port.primary.rest.{MockRoutes, ReboundRoutes}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -14,8 +16,9 @@ import scala.util.{Failure, Success}
 object Application extends App with AkkaImplicits {
 
   val engine = new TemplateEngine
-  val mockData = new MockData(engine)
-  val routes: Route = new MockRoutes(mockData).routes ~ new ReboundRoutes(mockData).routes
+  val dao = new ReboundDao
+  val service = new ReboundService(dao, engine)
+  val routes: Route = new MockRoutes(service).routes ~ new ReboundRoutes(service).routes
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "0.0.0.0", 8080)
 
   serverBinding.onComplete {

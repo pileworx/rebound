@@ -1,13 +1,12 @@
-package io.pileworx.rebound
+package io.pileworx.rebound.common.akka
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.{Config, ConfigFactory}
 
-import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
-import scala.language.postfixOps
+import scala.concurrent.duration._
 
 trait AkkaImplicits {
   implicit val system: ActorSystem = ActorSystem("rebound-actor-system")

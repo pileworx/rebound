@@ -1,15 +1,15 @@
-package io.pileworx.rebound.routes
+package io.pileworx.rebound.port.primary.rest
 
 import akka.http.scaladsl.model.StatusCodes._
-import akka.http.scaladsl.model.{ContentType, HttpCharsets, HttpEntity, MediaType, Uri}
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives.{get, _}
-import akka.http.scaladsl.server.{Route, StandardRoute}
 import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
-import io.pileworx.rebound.AkkaImplicits
-import io.pileworx.rebound.storage.{DefineMockCmd, MockData}
+import akka.http.scaladsl.server.{Route, StandardRoute}
+import io.pileworx.rebound.application.{DefineMockCmd, MockQuery, ReboundDao, ReboundService}
+import io.pileworx.rebound.common.akka.AkkaImplicits
 
-class ReboundRoutes(mockData: MockData) extends AkkaImplicits {
+class ReboundRoutes(service: ReboundService) extends AkkaImplicits {
 
   private val badRequest: StandardRoute = complete(BadRequest, """{"status":"BAD REQUEST", "message":"No mocked data found"}""")
 
@@ -17,18 +17,18 @@ class ReboundRoutes(mockData: MockData) extends AkkaImplicits {
     parameterMap { params: Map[String, String] =>
       val key: String = getPath(rPath, params)
       concat(
-        get { respond(MockData.GET, key).getOrElse(badRequest) },
-        put { respond(MockData.PUT, key).getOrElse(badRequest) },
-        post { respond(MockData.POST, key).getOrElse(badRequest) },
+        get { respond(MockQuery(ReboundDao.GET, key)).getOrElse(badRequest) },
+        put { respond(MockQuery(ReboundDao.PUT, key)).getOrElse(badRequest) },
+        post { respond(MockQuery(ReboundDao.POST, key)).getOrElse(badRequest) },
         head { complete(MethodNotAllowed) },
-        patch { respond(MockData.PATCH, key).getOrElse(badRequest) },
-        delete { respond(MockData.DELETE, key).getOrElse(badRequest) },
+        patch { respond(MockQuery(ReboundDao.PATCH, key)).getOrElse(badRequest) },
+        delete { respond(MockQuery(ReboundDao.DELETE, key)).getOrElse(badRequest) },
         options { complete(MethodNotAllowed) }
       )
     }
   }
 
-  private def respond(v: String, k:String): Option[StandardRoute] = mockData.getData(v,k) match {
+  private def respond(query: MockQuery): Option[StandardRoute] = service.find(query) match {
     case Some(mock) => Some(complete(mock.status -> HttpEntity(getContentType(mock), mock.response.getOrElse(""))))
     case _ => None
   }
