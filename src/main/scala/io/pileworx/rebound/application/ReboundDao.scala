@@ -2,7 +2,6 @@ package io.pileworx.rebound.application
 
 import akka.http.scaladsl.model.StatusCode
 import akka.http.scaladsl.model.StatusCodes.{Accepted, BadRequest}
-import io.pileworx.rebound.common.velocity.TemplateEngine
 import scala.collection.mutable
 
 class ReboundDao {

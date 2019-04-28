@@ -11,7 +11,7 @@ class ReboundDaoSpec extends WordSpec with Matchers with MockFactory {
   private val qsKey = "foo?foo=bar&bar=baz"
   private val mockData = new ReboundDao
   private val noneCmd = DefineMockCmd(ReboundDao.GET, path, None, 200, None, "application/json", None)
-  private val allCmd = DefineMockCmd(ReboundDao.GET, path, Some("foo=bar&bar=baz"), 200, Some("""{ "feild" : "value" }"""), "application/json", Some(Map()))
+  private val allCmd = DefineMockCmd(ReboundDao.GET, path, Some("foo=bar&bar=baz"), 200, Some("""{ "field" : "value" }"""), "application/json", Some(Map()))
 
   "Mock Data Store" should {
 

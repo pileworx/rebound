@@ -20,16 +20,6 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
     Some(Map())
   )
 
-  private val requiredCmd = DefineMockCmd(
-    "PUT",
-    "/batman/location",
-    None,
-    201,
-    None,
-    "application/hal+json",
-    None
-  )
-
   private val mKey = "foo"
   private val mQsKey = "foo?foo=bar&bar=baz"
 
