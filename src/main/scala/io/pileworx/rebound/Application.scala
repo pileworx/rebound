@@ -15,11 +15,12 @@ import scala.util.{Failure, Success}
 
 object Application extends App with AkkaImplicits {
 
+  val httpPort = if(sys.env.contains("HTTP_PORT")) sys.env("HTTP_PORT").asInstanceOf[Int] else 8585
   val engine = new TemplateEngine
   val dao = new ReboundDao
   val service = new ReboundService(dao, engine)
   val routes: Route = new MockRoutes(service).routes ~ new ReboundRoutes(service).routes
-  val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "0.0.0.0", 8080)
+  val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "0.0.0.0", httpPort)
 
   serverBinding.onComplete {
     case Success(bound) =>
