@@ -5,7 +5,7 @@ Mock server for isolated functional testing.
 
 Licensed under the Apache 2 license.
 
-[![Build Status](https://travis-ci.org/marcuslange/rebound.svg?branch=develop)](https://travis-ci.org/marcuslange/rebound)
+[![Build Status](https://travis-ci.org/pileworx/rebound.svg?branch=develop)](https://travis-ci.org/pileworx/rebound)
 
 Getting Started
 ===============
