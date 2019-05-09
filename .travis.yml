@@ -6,12 +6,15 @@ jdk:
 services:
   - docker
 
+stages:
+  - test
+  - name: deploy
+    if: branch = master AND type = push AND fork = false
+
 jobs:
   include:
     - stage: test
       script: sbt clean coverage test coverageReport coverageAggregate codacyCoverage
-    - stage: build and publish
-      if: branch = master AND type = push AND fork = false
+    - stage: deploy
     - script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      if: branch = master AND type = push AND fork = false
     - script: sbt clean compile docker:publish
