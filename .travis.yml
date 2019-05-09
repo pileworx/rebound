@@ -16,6 +16,6 @@ jobs:
     - stage: test
       script: sbt clean coverage test coverageReport coverageAggregate codacyCoverage
     - stage: deploy
-    - script:
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - sbt clean compile docker:publish
+    - script: >-
+        "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin &&
+        sbt clean compile docker:publish
