@@ -7,6 +7,7 @@ Licensed under the Apache 2 license.
 
 [![Build Status](https://travis-ci.org/pileworx/rebound.svg?branch=develop)](https://travis-ci.org/pileworx/rebound)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fe73be17d3544f06b27911470214e3e6)](https://www.codacy.com/app/marcuslange/rebound?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pileworx/rebound&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/fe73be17d3544f06b27911470214e3e6)](https://www.codacy.com/app/marcuslange/rebound?utm_source=github.com&utm_medium=referral&utm_content=pileworx/rebound&utm_campaign=Badge_Coverage)
 
 Getting Started
 ---------------
