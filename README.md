@@ -6,14 +6,15 @@ Mock server for isolated functional testing.
 Licensed under the Apache 2 license.
 
 [![Build Status](https://travis-ci.org/pileworx/rebound.svg?branch=develop)](https://travis-ci.org/pileworx/rebound)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fe73be17d3544f06b27911470214e3e6)](https://www.codacy.com/app/marcuslange/rebound?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pileworx/rebound&amp;utm_campaign=Badge_Grade)
 
 Getting Started
-===============
+---------------
 
 Docker image is available at pileworx/rebound on Docker Hub.
 
 Usage
-=====
+-----
 The server's default port is 8585.
 To create a response, PUT to /mock
 ```json
@@ -27,48 +28,48 @@ To create a response, PUT to /mock
 }
  ```
 
- A subsequent request to /foo/bar?foo=bar&bar=baz will return an HTTP Status of OK(200), a Content-Type of application/hal+json, and a body of:
+A subsequent request to /foo/bar?foo=bar&bar=baz will return an HTTP Status of OK(200), a Content-Type of application/hal+json, and a body of:
  ```json
- {
+{
   "propertyName":"this is my value"
- }
+}
  ```
 Properties
-==========
+----------
  
 method
 ------
  - Required
  
- HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
+HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
  
 path
 ----
  - Required
  
- URL Path.
+URL Path.
  
 status
 ------
  - Required
  
- HTTP Status Code.
+HTTP Status Code.
  
 qs
 --
  - Optional
  
- HTTP Query String.
+HTTP Query String.
  
 response
 --------
  - Optional
  
- Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
+Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
  
  <http://people.apache.org/~henning/velocity/html/ch02s02.html>
  
- example:
+example:
  ```json
 {
   "method": "POST",
@@ -84,7 +85,7 @@ contentType
 -----------
  - Required
  
- Value of Content-Type header.
+Value of Content-Type header.
  
 values
 ------
