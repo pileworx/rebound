@@ -67,7 +67,7 @@ response
  
 Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
  
- <http://people.apache.org/~henning/velocity/html/ch02s02.html>
+<http://people.apache.org/~henning/velocity/html/ch02s02.html>
  
 example:
  ```json
