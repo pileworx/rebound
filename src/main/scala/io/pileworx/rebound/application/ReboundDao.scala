@@ -9,15 +9,19 @@ class ReboundDao {
   private var verb = initStorage()
 
   def get(query: MockQuery): Option[DefineMockCmd] = {
-    if (!verb(query.verb).contains(query.path)) return None
-    Some(verb(query.verb)(query.path))
+    if (!verb(query.verb).contains(query.path))
+      None
+    else
+      Some(verb(query.verb)(query.path))
   }
 
   def add(data: DefineMockCmd): StatusCode = {
-    if (!verb.contains(data.method)) return BadRequest
-
-    verb(data.method) += makeKey(data) -> data
-    Accepted
+    if (!verb.contains(data.method)) {
+      BadRequest
+    } else {
+      verb(data.method) += makeKey(data) -> data
+      Accepted
+    }
   }
 
   def reset(): Unit = {

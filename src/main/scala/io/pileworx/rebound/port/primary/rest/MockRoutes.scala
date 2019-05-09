@@ -15,10 +15,10 @@ class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSu
 
   implicit val defineMockCmdFormat: RootJsonFormat[DefineMockCmd] = jsonFormat7(DefineMockCmd)
 
-  val ACCEPTED_MESSAGE = """{"status":"ACCEPTED"}"""
-  val SUCCESS_MESSAGE = """{"status":"SUCCESS"}"""
-  val BAD_REQUEST_MESSAGE = """{"status":"BAD REQUEST", "message":"Unrecognized method in submitted mock"}"""
-  val INTERNAL_SERVER_ERROR_MESSAGE = """{"status":"INTERNAL SERVER ERROR", "message":"An unhandled error occurred during possessing"}"""
+  val acceptMessage = """{"status":"ACCEPTED"}"""
+  val successMessage = """{"status":"SUCCESS"}"""
+  val badRequestMessage = """{"status":"BAD REQUEST", "message":"Unrecognized method in submitted mock"}"""
+  val internalServerErrorMessage = """{"status":"INTERNAL SERVER ERROR", "message":"An unhandled error occurred during possessing"}"""
 
   val routes: Route = path("mock") {
     concat(
@@ -26,16 +26,16 @@ class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSu
         entity(as[DefineMockCmd]) { cmd =>
           val resp = service.add(cmd)
           resp match {
-            case Accepted => complete(resp -> HttpEntity(ContentTypes.`application/json`, ACCEPTED_MESSAGE))
-            case BadRequest => complete(resp -> HttpEntity(ContentTypes.`application/json`, BAD_REQUEST_MESSAGE))
-            case _ => complete(InternalServerError -> HttpEntity(ContentTypes.`application/json`, INTERNAL_SERVER_ERROR_MESSAGE))
+            case Accepted => complete(resp -> HttpEntity(ContentTypes.`application/json`, acceptMessage))
+            case BadRequest => complete(resp -> HttpEntity(ContentTypes.`application/json`, badRequestMessage))
+            case _ => complete(InternalServerError -> HttpEntity(ContentTypes.`application/json`, internalServerErrorMessage))
           }
         }
       },
       delete {
         complete {
           service.clear()
-          HttpEntity(ContentTypes.`application/json`, SUCCESS_MESSAGE)
+          HttpEntity(ContentTypes.`application/json`, successMessage)
         }
       }
     )
