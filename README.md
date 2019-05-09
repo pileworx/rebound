@@ -1,16 +1,20 @@
-# rebound
+rebound
+=======
 
 Mock server for isolated functional testing.
 
 Licensed under the Apache 2 license.
 
-[![Build Status](https://travis-ci.org/marcuslange/rebound.svg?branch=develop)](https://travis-ci.org/marcuslange/rebound)
+[![Build Status](https://travis-ci.org/pileworx/rebound.svg?branch=develop)](https://travis-ci.org/pileworx/rebound)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fe73be17d3544f06b27911470214e3e6)](https://www.codacy.com/app/marcuslange/rebound?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pileworx/rebound&amp;utm_campaign=Badge_Grade)
 
-####Getting Started
+Getting Started
+---------------
 
 Docker image is available at pileworx/rebound on Docker Hub.
 
-####Usage
+Usage
+-----
 The server's default port is 8585.
 To create a response, PUT to /mock
 ```json
@@ -24,42 +28,48 @@ To create a response, PUT to /mock
 }
  ```
 
- A subsequent request to /foo/bar?foo=bar&bar=baz will return an HTTP Status of OK(200), a Content-Type of application/hal+json, and a body of:
+A subsequent request to /foo/bar?foo=bar&bar=baz will return an HTTP Status of OK(200), a Content-Type of application/hal+json, and a body of:
  ```json
- {
+{
   "propertyName":"this is my value"
- }
+}
  ```
- ####Properties
+Properties
+----------
  
- #####method
- - Required
+method
+------
+- Required
  
- HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
+HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
  
- #####path
- - Required
+path
+----
+- Required
  
- URL Path.
+URL Path.
  
- #####status
- - Required
+status
+------
+- Required
  
- HTTP Status Code.
+HTTP Status Code.
  
- #####qs
- - Optional
+qs
+--
+- Optional
  
- HTTP Query String.
+HTTP Query String.
  
- #####response
- - Optional
+response
+--------
+- Optional
  
- Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
+Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
  
- <http://people.apache.org/~henning/velocity/html/ch02s02.html>
+<http://people.apache.org/~henning/velocity/html/ch02s02.html>
  
- example:
+example:
  ```json
 {
   "method": "POST",
@@ -71,13 +81,15 @@ To create a response, PUT to /mock
 }
 ```
  
- #####contentType
- - Required
+contentType
+-----------
+- Required
  
- Value of Content-Type header.
+Value of Content-Type header.
  
- #####values
- - Optional
+values
+------
+- Optional
 
 Key-Value pairs to use in VTL
 

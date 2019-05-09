@@ -3,6 +3,18 @@ scala:
    - 2.12.8
 jdk:
   - oraclejdk11
+services:
+  - docker
 
-script:
-  - sbt clean coverage test coverageReport
+stages:
+  - test
+  - name: deploy
+    if: branch = master AND type = push AND fork = false
+
+jobs:
+  include:
+    - stage: test
+      script: sbt clean coverage test coverageReport coverageAggregate codacyCoverage
+    - stage: deploy
+    - script: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - script: sbt clean compile docker:publish
