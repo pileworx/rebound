@@ -34,7 +34,7 @@ class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with
 
       Put("/mock", HttpEntity(ContentTypes.`application/json`, putBody)) ~> route.routes ~> check {
         status shouldEqual StatusCodes.Accepted
-        responseAs[String] should include(route.ACCEPTED_MESSAGE)
+        responseAs[String] should include(route.acceptMessage)
       }
     }
 
@@ -46,7 +46,7 @@ class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with
 
       Put("/mock", HttpEntity(ContentTypes.`application/json`, putBody)) ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
-        responseAs[String] should include(route.BAD_REQUEST_MESSAGE)
+        responseAs[String] should include(route.badRequestMessage)
       }
     }
 
@@ -58,7 +58,7 @@ class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with
 
       Put("/mock", HttpEntity(ContentTypes.`application/json`, putBody)) ~> route.routes ~> check {
         status shouldEqual StatusCodes.InternalServerError
-        responseAs[String] should include(route.INTERNAL_SERVER_ERROR_MESSAGE)
+        responseAs[String] should include(route.internalServerErrorMessage)
       }
     }
 
@@ -70,7 +70,7 @@ class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with
 
       Delete("/mock") ~> route.routes ~> check {
         status shouldEqual StatusCodes.OK
-        responseAs[String] should include(route.SUCCESS_MESSAGE)
+        responseAs[String] should include(route.successMessage)
       }
     }
   }

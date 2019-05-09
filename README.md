@@ -45,25 +45,25 @@ HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTI
  
 path
 ----
- - Required
+- Required
  
 URL Path.
  
 status
 ------
- - Required
+- Required
  
 HTTP Status Code.
  
 qs
 --
- - Optional
+- Optional
  
 HTTP Query String.
  
 response
 --------
- - Optional
+- Optional
  
 Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
  
@@ -83,13 +83,13 @@ example:
  
 contentType
 -----------
- - Required
+- Required
  
 Value of Content-Type header.
  
 values
 ------
- - Optional
+- Optional
 
 Key-Value pairs to use in VTL
 
