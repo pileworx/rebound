@@ -26,6 +26,4 @@ trait Cors {
   def cors(r: Route): Route = addAccessControlHeaders {
     preFlightRequestHandler ~ r
   }
-
-  def addCorsHeaders(response: HttpResponse): HttpResponse = response.withHeaders(corsResponseHeaders)
 }
