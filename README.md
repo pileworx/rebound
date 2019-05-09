@@ -39,7 +39,7 @@ Properties
  
 method
 ------
- - Required
+- Required
  
 HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
  
