@@ -16,15 +16,12 @@ class ReboundRoutes(service: ReboundService) extends AkkaImplicits {
   val routes: Route = path(RemainingPath) { rPath =>
     parameterMap { params: Map[String, String] =>
       val key: String = getPath(rPath, params)
-      concat(
-        get { respond(MockQuery(ReboundDao.GET, key)).getOrElse(badRequest) },
-        put { respond(MockQuery(ReboundDao.PUT, key)).getOrElse(badRequest) },
-        post { respond(MockQuery(ReboundDao.POST, key)).getOrElse(badRequest) },
-        head { complete(MethodNotAllowed) },
-        patch { respond(MockQuery(ReboundDao.PATCH, key)).getOrElse(badRequest) },
-        delete { respond(MockQuery(ReboundDao.DELETE, key)).getOrElse(badRequest) },
-        options { complete(MethodNotAllowed) }
-      )
+      get { respond(MockQuery(ReboundDao.GET, key)).getOrElse(badRequest) } ~
+      put { respond(MockQuery(ReboundDao.PUT, key)).getOrElse(badRequest) } ~
+      post { respond(MockQuery(ReboundDao.POST, key)).getOrElse(badRequest) } ~
+      head { complete(MethodNotAllowed) } ~
+      patch { respond(MockQuery(ReboundDao.PATCH, key)).getOrElse(badRequest) } ~
+      delete { respond(MockQuery(ReboundDao.DELETE, key)).getOrElse(badRequest) }
     }
   }
 

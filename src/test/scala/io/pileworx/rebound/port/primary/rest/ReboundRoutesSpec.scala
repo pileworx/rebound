@@ -208,14 +208,5 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
         status shouldEqual StatusCodes.BadRequest
       }
     }
-
-    "OPTIONS is not implemented" in {
-      val serviceMock = stub[ReboundService]
-      val route = new ReboundRoutes(serviceMock)
-
-      Options(s"/$mKey") ~> route.routes ~> check {
-        status shouldEqual StatusCodes.MethodNotAllowed
-      }
-    }
   }
 }
