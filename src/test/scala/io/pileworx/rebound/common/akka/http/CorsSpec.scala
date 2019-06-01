@@ -1,15 +1,14 @@
-package io.pileworx.rebound.common.velocity
+package io.pileworx.rebound.common.akka.http
 
-import akka.http.scaladsl.model.HttpMethods.{DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT}
+import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.StatusCodes.Accepted
+import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import io.pileworx.rebound.application.ReboundService
-import io.pileworx.rebound.common.akka.http.Cors
 import io.pileworx.rebound.port.primary.rest.MockRoutes
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
-import akka.http.scaladsl.model.headers._
 
 class CorsSpec extends WordSpec with Matchers with ScalatestRouteTest with MockFactory with Cors {
 

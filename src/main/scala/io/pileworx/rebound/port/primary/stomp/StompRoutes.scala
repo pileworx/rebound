@@ -23,6 +23,3 @@ class StompRoutes extends AkkaImplicits {
     handleWebSocketMessagesForOptionalProtocol(stomp, Some("v10.stomp"))
   }
 }
-//TextMessage.Strict(CONNECT
-//accept-version:1.0,1.1,1.2
-//heart-beat:4000,4000)
