@@ -7,7 +7,10 @@ lazy val logbackV = "1.2.3"
 lazy val scalatestV = "3.0.5"
 lazy val scalamockV = "4.1.0"
 
+lazy val akkaHttpStomp = ProjectRef(uri("https://github.com/pileworx/akka-http-stomp.git"), "akka-http-stomp")
+
 lazy val root = (project in file("."))
+  .dependsOn(akkaHttpStomp)
   .enablePlugins(JavaAppPackaging)
   .settings(
     packageName in Docker := "pileworx/rebound",
@@ -31,6 +34,7 @@ lazy val root = (project in file("."))
       "ch.qos.logback" % "logback-classic" % logbackV % Runtime,
       "org.apache.velocity" % "velocity-engine-core" % velocityV,
       "org.parboiled" %% "parboiled" % parboiledV,
+      "io.pileworx" %% "akka-http-hal" % "1.2.3",
 
       "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % Test,
       "com.typesafe.akka" %% "akka-testkit" % akkaV % Test,
