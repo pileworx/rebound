@@ -2,7 +2,8 @@ package io.pileworx.rebound.port.primary.rest
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import io.pileworx.rebound.application.{DefineMockCmd, MockQuery, ReboundDao, ReboundService}
+import io.pileworx.rebound.application.{MockQuery, ReboundDao, ReboundService}
+import io.pileworx.rebound.domain.command.DefineMockCmd
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 

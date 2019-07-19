@@ -2,6 +2,7 @@ package io.pileworx.rebound.application
 
 import akka.http.scaladsl.model.StatusCodes.Accepted
 import io.pileworx.rebound.common.velocity.TemplateEngine
+import io.pileworx.rebound.domain.command.DefineMockCmd
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 

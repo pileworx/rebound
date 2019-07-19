@@ -6,8 +6,9 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
-import io.pileworx.rebound.application.{DefineMockCmd, ReboundService}
+import io.pileworx.rebound.application.ReboundService
 import io.pileworx.rebound.common.akka.AkkaImplicits
+import io.pileworx.rebound.domain.command.DefineMockCmd
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSupport with DefaultJsonProtocol {
@@ -17,7 +18,7 @@ class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSu
   val acceptMessage = """{"status":"ACCEPTED"}"""
   val successMessage = """{"status":"SUCCESS"}"""
   val badRequestMessage = """{"status":"BAD REQUEST", "message":"Unrecognized method in submitted mock"}"""
-  val internalServerErrorMessage = """{"status":"INTERNAL SERVER ERROR", "message":"An unhandled error occurred during possessing"}"""
+  val internalServerErrorMessage = """{"status":"INTERNAL SERVER ERROR", "message":"An unhandled error occurred during processing"}"""
 
   val routes: Route = path("mock") {
     delete {

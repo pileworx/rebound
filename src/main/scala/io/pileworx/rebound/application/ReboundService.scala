@@ -2,12 +2,18 @@ package io.pileworx.rebound.application
 
 import akka.http.scaladsl.model.StatusCode
 import io.pileworx.rebound.common.velocity.TemplateEngine
+import io.pileworx.rebound.domain.{Mock, MockId, MockRepository}
+import io.pileworx.rebound.domain.command.DefineMockCmd
 
 import scala.collection.immutable.Map
 
-class ReboundService(reboundDao: ReboundDao, engine: TemplateEngine) {
+class ReboundService(repository: MockRepository, engine: TemplateEngine) {
+
+  def findById(id: MockId): Option[Mock] = repository.findById(id)
+
 
   def add(cmd: DefineMockCmd): StatusCode = {
+
     val data = cmd.response match {
       case Some(response) => cmd.values match {
         case Some(values) => cmd.copy(response = Some(engine.process(response, values)))
@@ -16,10 +22,8 @@ class ReboundService(reboundDao: ReboundDao, engine: TemplateEngine) {
       case None => cmd
     }
 
-    reboundDao.add(data)
+    repository.save(Mock(DefineMockCmd))
   }
 
-  def find(query: MockQuery): Option[DefineMockCmd] = reboundDao.get(query)
-
-  def clear(): Unit = reboundDao.reset()
+  def clear(): Unit = repository.reset()
 }

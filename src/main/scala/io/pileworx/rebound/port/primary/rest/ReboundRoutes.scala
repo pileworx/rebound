@@ -6,28 +6,29 @@ import akka.http.scaladsl.server.Directives.{get, _}
 import akka.http.scaladsl.server.directives.PathDirectives.path
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import akka.http.scaladsl.server.{Route, StandardRoute}
-import io.pileworx.rebound.application.{DefineMockCmd, MockQuery, ReboundDao, ReboundService}
+import io.pileworx.rebound.application.{MockQuery, ReboundDao, ReboundService}
 import io.pileworx.rebound.common.akka.AkkaImplicits
+import io.pileworx.rebound.domain.MockId
+import io.pileworx.rebound.domain.command.DefineMockCmd
 
 class ReboundRoutes(service: ReboundService) extends AkkaImplicits {
 
   private val badRequest: StandardRoute = complete(BadRequest, """{"status":"BAD REQUEST", "message":"No mocked data found"}""")
 
-  val routes: Route = path(RemainingPath) { rPath =>
-    parameterMap { params: Map[String, String] =>
-      val key: String = getPath(rPath, params)
-      get { respond(MockQuery(ReboundDao.GET, key)).getOrElse(badRequest) } ~
-      put { respond(MockQuery(ReboundDao.PUT, key)).getOrElse(badRequest) } ~
-      post { respond(MockQuery(ReboundDao.POST, key)).getOrElse(badRequest) } ~
-      head { complete(MethodNotAllowed) } ~
-      patch { respond(MockQuery(ReboundDao.PATCH, key)).getOrElse(badRequest) } ~
-      delete { respond(MockQuery(ReboundDao.DELETE, key)).getOrElse(badRequest) }
+  val routes: Route = pass(
+    extractRequest { request =>
+      request.method match {
+        case HttpMethods.CONNECT || HttpMethods.HEAD || HttpMethods.TRACE => complete(MethodNotAllowed)
+        case _ => respond(request).getOrElse(badRequest)
+      }
     }
-  }
+  )
 
-  private def respond(query: MockQuery): Option[StandardRoute] = service.find(query) match {
-    case Some(mock) => Some(complete(mock.status -> HttpEntity(getContentType(mock), mock.response.getOrElse(""))))
-    case _ => None
+  private def respond(request: HttpRequest): Option[StandardRoute] = {
+    service.findById(MockId(request)) match {
+      case Some(mock) => Some(complete(mock.status -> HttpEntity(getContentType(mock), mock.response.getOrElse(""))))
+      case _ => None
+    }
   }
 
   private def getPath(rPath: Uri.Path, params: Map[String, String]): String = {
