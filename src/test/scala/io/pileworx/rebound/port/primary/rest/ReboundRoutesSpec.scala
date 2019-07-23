@@ -2,8 +2,8 @@ package io.pileworx.rebound.port.primary.rest
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import io.pileworx.rebound.application.{MockQuery, ReboundDao, ReboundService}
-import io.pileworx.rebound.domain.command.DefineMockCmd
+import io.pileworx.rebound.application.ReboundService
+import io.pileworx.rebound.domain.mock.{Header, Response}
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{Matchers, WordSpec}
 
@@ -11,15 +11,11 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
 
   private val serverResponse = """{"propertyName":"this is my value"}"""
 
-  private val allCmd = DefineMockCmd(
-    "PUT",
-    "/batman/location",
-    Some("foo=bar&bar=baz"),
+  private val resp: Response = Response(
     201,
+    Some(Seq(Header("Content-Type", "application/hal+json"))),
     Some("{\"propertyName\":\"this is my value\"}"),
-    "application/hal+json",
-    Some(Map())
-  )
+    None)
 
   private val mKey = "foo"
   private val mQsKey = "foo?foo=bar&bar=baz"
@@ -30,7 +26,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.GET, mKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Get(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -42,7 +38,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.GET, mQsKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Get(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -54,7 +50,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.GET, mKey)).returning(None)
+      (serviceMock.nextResponseById _).when(*).returning(None)
 
       Get(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -65,7 +61,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.PUT, mKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Put(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -77,7 +73,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.PUT, mQsKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Put(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -89,7 +85,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.PUT, mKey)).returning(None)
+      (serviceMock.nextResponseById _).when(*).returning(None)
 
       Put(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -100,7 +96,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.POST, mKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Post(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -112,7 +108,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.POST, mQsKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Post(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -124,7 +120,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.POST, mKey)).returning(None)
+      (serviceMock.nextResponseById _).when(*).returning(None)
 
       Post(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -144,7 +140,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.PATCH, mKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Patch(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -156,7 +152,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.PATCH, mQsKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Patch(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -168,7 +164,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.PATCH, mKey)).returning(None)
+      (serviceMock.nextResponseById _).when(*).returning(None)
 
       Patch(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -179,7 +175,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.DELETE, mKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Delete(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -191,7 +187,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.DELETE, mQsKey)).returning(Some(allCmd))
+      (serviceMock.nextResponseById _).when(*).returning(Some(resp))
 
       Delete(s"/$mQsKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.Created
@@ -203,7 +199,7 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
       val serviceMock = stub[ReboundService]
       val route = new ReboundRoutes(serviceMock)
 
-      (serviceMock.find _).when(MockQuery(ReboundDao.DELETE, mKey)).returning(None)
+      (serviceMock.nextResponseById _).when(*).returning(None)
 
       Delete(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
