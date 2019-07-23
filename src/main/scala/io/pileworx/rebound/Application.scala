@@ -21,7 +21,7 @@ object Application extends App with AkkaImplicits with Cors {
   val engine = new TemplateEngine
   val repository = new MockRepository
   val service = new ReboundService(repository, engine)
-  val routes: Route = new MockRoutes(service).routes
+  val routes: Route = cors { new MockRoutes(service).routes ~ new ReboundRoutes(service).routes }
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "0.0.0.0", httpPort)
 
   serverBinding.onComplete {
