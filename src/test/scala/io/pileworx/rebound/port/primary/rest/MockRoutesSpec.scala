@@ -16,7 +16,7 @@ class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with
       |    "request": {
       |      "method": "PUT",
       |      "path": "/foo/bar",
-      |      "qs": "foo=bar&bar=baz",
+      |      "query": "foo=bar&bar=baz",
       |      "headers": [
       |        {
       |          "name": "accept",

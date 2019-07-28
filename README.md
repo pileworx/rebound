@@ -110,7 +110,7 @@ Expected body of POST, PUT, or PATCH requests.
 
 then
 ----
--  Required
+-   Required
 
 A list of expected responses.
 

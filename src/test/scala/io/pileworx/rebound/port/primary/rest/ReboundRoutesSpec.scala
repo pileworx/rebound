@@ -1,7 +1,6 @@
 package io.pileworx.rebound.port.primary.rest
 
 import akka.http.scaladsl.model.{HttpCharsets, MediaTypes, StatusCodes}
-import akka.http.scaladsl.server.ContentNegotiator.Alternative.MediaType
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import io.pileworx.rebound.application.ReboundService
 import io.pileworx.rebound.domain.mock.{Header, Response}
