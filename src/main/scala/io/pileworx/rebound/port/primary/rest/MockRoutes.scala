@@ -14,11 +14,12 @@ import spray.json._
 
 class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSupport with DefaultJsonProtocol {
 
+  val headerApply: (String, String) => Header = Header.apply
   implicit val methodFormat: RootJsonFormat[Method] = new RootJsonFormat[Method] {
     def read(value: JsValue): Method = Method(value.asInstanceOf[JsString].value)
     def write(method: Method): JsValue = JsString(method.value)
   }
-  implicit val headerFormat: RootJsonFormat[Header] = jsonFormat2(Header)
+  implicit val headerFormat: RootJsonFormat[Header] = jsonFormat2(headerApply)
   implicit val responseFormat: RootJsonFormat[DefineResponseCmd] = jsonFormat4(DefineResponseCmd)
   implicit val defineRequestCmd: RootJsonFormat[DefineRequestCmd] = jsonFormat5(DefineRequestCmd)
   implicit val whenFormat: RootJsonFormat[When] = jsonFormat1(When)
