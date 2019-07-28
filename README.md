@@ -20,12 +20,36 @@ The server's default port is 8585.
 To create a response, PUT to /mock
 ```json
 {
-  "method": "PUT",
-  "path": "/foo/bar",
-  "status": 200,
-  "qs": "foo=bar&bar=baz",
-  "response": "{\"foo\":\"this is my value\"}",
-  "contentType": "application/hal+json"
+  "scenario": "Scenario Name",
+  "when": {
+    "request": {
+      "method": "PUT",
+      "path": "/foo/bar",
+      "query": "foo=bar&bar=baz",
+      "headers": [
+        {
+          "name": "accept",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"foo\":\"bar\"}"
+    }
+  },
+  "then": [
+    {
+      "status": 200,
+      "headers": [
+        {
+          "name": "content-type",
+          "value": "application/hal+json"
+        }
+      ],
+      "body": "{\"foo\":\"$bar\"}",
+      "values": {
+        "bar": "this is my first value"
+      }
+    }
+  ]
 }
  ```
 
@@ -37,75 +61,116 @@ A subsequent request to /foo/bar?foo=bar&bar=baz will return an HTTP Status of O
  ```
 Properties
 ----------
- 
-method
+
+scenario
+--------
+-   Required
+
+Name of the Scenario you are creating
+
+when
 ------
+-   Required
+
+when.request
+------------
+-   Required
+
+The http request to expect
+
+when.request.method
+-------------------
 -   Required
  
 HTTP Verb. Currently supporting GET, PUT, POST, PATCH, and DELETE. HEAD and OPTIONS are in future plans.
  
-path
-----
+when.request.path
+-----------------
 -   Required
  
 URL Path.
+  
+when.request.query
+------------------
+-   Optional
  
-status
+HTTP Query String.
+
+when.request.headers
+--------------------
+-   Optional
+ 
+A list of name value pairs of the request headers.
+
+when.request.body
+--------------------
+-   Optional
+ 
+Expected body of POST, PUT, or PATCH requests.
+
+then
+----
+- Required
+
+A list of expected responses.
+
+Responses will be returned in order submitted and will return a failed response once the list is exhausted. 
+If one response is submitted. It will return that response on every matching request without a failure.
+
+then.[n].status
 ------
 -   Required
  
 HTTP Status Code.
- 
-qs
---
+
+then.[n].headers
+--------------------
 -   Optional
  
-HTTP Query String.
+A list of name value pairs of the response headers.
  
-response
+then.[n].body
 --------
 -   Optional
  
-Stubbed response. The response field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
+Stubbed response body. The body field supports Velocity VTL for scripting. Velocity VTL documentation can be found here: 
  
 <http://people.apache.org/~henning/velocity/html/ch02s02.html>
  
 example:
  ```json
 {
-  "method": "POST",
-  "path": "/batman/location",
-  "status": 201,
-  "qs": "foo=bar&bar=baz",
-  "response": "[#foreach($i in [1..5]){\"foo\":\"this is my value\"} #if($foreach.count != 5), #end #end]",
-  "contentType": "application/hal+json"
+  "status": 200,
+  "headers": [
+    {
+      "name": "content-type",
+      "value": "application/hal+json"
+    }
+  ],
+  "body": "[#foreach($i in [1..5]){\"foo\":\"this is my value\"} #if($foreach.count != 5), #end #end]"
 }
 ```
  
-contentType
------------
--   Required
- 
-Value of Content-Type header.
- 
-values
+then.[n].values
 ------
 -   Optional
 
 Key-Value pairs to use in VTL
 
-example:
+example response:
 
 ```json
 {
-  "method": "PUT",
-  "path": "/foo/bar",
   "status": 200,
-  "qs": "foo=bar&bar=baz",
-  "response": "{\"foo\":\"$bar\"}",
-  "contentType": "application/hal+json",
+  "headers": [
+    {
+      "name": "content-type",
+      "value": "application/hal+json"
+    }
+  ],
+  "body": "{\"foo\":\"$bar\"}",
   "values": {
-    "bar": "this is my value"
+    "bar": "this is my first value"
   }
 }
 ```
