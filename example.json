@@ -1,0 +1,42 @@
+{
+  "scenario": "Scenario Name",
+  "when": {
+    "request": {
+      "method": "PUT",
+      "path": "/foo/bar",
+      "qs": "foo=bar&bar=baz",
+      "headers": [
+        {
+          "name": "accept",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"foo\":\"bar\"}"
+    }
+  },
+  "then": [
+    {
+      "status": 200,
+      "headers": [
+        {
+          "name": "accept",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"foo\":\"$bar\"}",
+      "values": {
+        "bar": "this is my first value"
+      }
+    },
+    {
+      "status": 200,
+      "headers": [
+        {
+          "name": "accept",
+          "value": "application/json"
+        }
+      ],
+      "body": "{\"foo\":\"bar\"}"
+    }
+  ]
+}
