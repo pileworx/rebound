@@ -1,6 +1,7 @@
 package io.pileworx.rebound.port.primary.rest
 
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{HttpCharsets, MediaTypes, StatusCodes}
+import akka.http.scaladsl.server.ContentNegotiator.Alternative.MediaType
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import io.pileworx.rebound.application.ReboundService
 import io.pileworx.rebound.domain.mock.{Header, Response}
@@ -14,6 +15,12 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
   private val resp: Response = Response(
     201,
     Some(Seq(Header("Content-Type", "application/hal+json"))),
+    Some("{\"propertyName\":\"this is my value\"}"),
+    None)
+
+  private val respNoContentType: Response = Response(
+    201,
+    None,
     Some("{\"propertyName\":\"this is my value\"}"),
     None)
 
@@ -203,6 +210,17 @@ class ReboundRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest w
 
       Delete(s"/$mKey") ~> route.routes ~> check {
         status shouldEqual StatusCodes.BadRequest
+      }
+    }
+
+    "return text/plain if not Content-Type is defined" in {
+      val serviceMock = stub[ReboundService]
+      val route = new ReboundRoutes(serviceMock)
+
+      (serviceMock.nextResponseById _).when(*).returning(Some(respNoContentType))
+
+      Delete(s"/$mKey") ~> route.routes ~> check {
+        contentType shouldEqual MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`)
       }
     }
   }
