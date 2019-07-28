@@ -110,26 +110,26 @@ Expected body of POST, PUT, or PATCH requests.
 
 then
 ----
-- Required
+-  Required
 
 A list of expected responses.
 
 Responses will be returned in order submitted and will return a failed response once the list is exhausted. 
 If one response is submitted. It will return that response on every matching request without a failure.
 
-then.[n].status
+then.\[n\].status
 ------
 -   Required
  
 HTTP Status Code.
 
-then.[n].headers
+then.\[n\].headers
 --------------------
 -   Optional
  
 A list of name value pairs of the response headers.
  
-then.[n].body
+then.\[n\].body
 --------
 -   Optional
  
@@ -151,7 +151,7 @@ example:
 }
 ```
  
-then.[n].values
+then.\[n\].values
 ------
 -   Optional
 
