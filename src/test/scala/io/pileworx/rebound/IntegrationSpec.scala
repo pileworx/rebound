@@ -1,12 +1,20 @@
-package io.pileworx.rebound.port.primary.rest
+package io.pileworx.rebound
 
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import io.pileworx.rebound.application.ReboundService
-import org.scalamock.scalatest.MockFactory
+import io.pileworx.rebound.common.velocity.TemplateEngine
+import io.pileworx.rebound.domain.MockRepository
+import io.pileworx.rebound.port.primary.rest.{MockRoutes, ReboundRoutes}
 import org.scalatest.{Matchers, WordSpec}
 
-class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with MockFactory {
+class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
+  val engine = new TemplateEngine
+  val repository = new MockRepository
+  val service = new ReboundService(repository, engine)
+  val reboundRoute = new ReboundRoutes(service)
+  val mockRoute = new MockRoutes(service)
 
   private val putBody =
     """
@@ -54,29 +62,31 @@ class MockRoutesSpec extends WordSpec with Matchers with ScalatestRouteTest with
       |}
     """.stripMargin
 
-  "Mocking routes" should {
-
-    "successfully PUT a mock and receive a valid response " in {
-      val serviceMock = stub[ReboundService]
-      val route = new MockRoutes(serviceMock)
-
-      (serviceMock.add _).when(*).returning(Unit)
-
-      Put("/mock", HttpEntity(ContentTypes.`application/json`, putBody)) ~> route.routes ~> check {
+  "Integration" should {
+    "create a mock" in {
+      Put("/mock", HttpEntity(ContentTypes.`application/json`, putBody)) ~> mockRoute.routes ~> check {
         status shouldEqual StatusCodes.Accepted
-        responseAs[String] should include(route.acceptMessage)
+        responseAs[String] should include(mockRoute.acceptMessage)
       }
     }
 
-    "return successfully when a DELETE is sent" in {
-      val serviceMock = stub[ReboundService]
-      val route = new MockRoutes(serviceMock)
+    "retrieve first response" in {
+      Put("/foo/bar?foo=bar&bar=baz", "{\"foo\":\"bar\"}") ~>
+        addHeader(RawHeader("Accept", "application/json")) ~>
+        reboundRoute.routes ~> check {
 
-      (serviceMock.clear _).when().returning(Unit)
-
-      Delete("/mock") ~> route.routes ~> check {
         status shouldEqual StatusCodes.OK
-        responseAs[String] should include(route.successMessage)
+        responseAs[String] should include("this is my first value")
+      }
+    }
+
+    "retrieve second response" in {
+      Put("/foo/bar?foo=bar&bar=baz", "{\"foo\":\"bar\"}") ~>
+        addHeader(RawHeader("Accept", "application/json")) ~>
+        reboundRoute.routes ~> check {
+
+        status shouldEqual StatusCodes.OK
+        responseAs[String] should include("bar")
       }
     }
   }

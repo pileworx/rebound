@@ -7,7 +7,7 @@ import org.apache.velocity.app.Velocity
 
 class TemplateEngine {
 
-  def process(template: String, params: Map[String, String]): String = {
+  def process(template: String, params: Map[String, Any]): String = {
     val context = new VelocityContext
     val writer = new StringWriter
 
