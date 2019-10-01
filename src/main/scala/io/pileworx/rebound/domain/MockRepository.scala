@@ -4,14 +4,18 @@ import io.pileworx.rebound.domain.mock.MockId
 
 import scala.collection.mutable
 
+object MockRepository {
+  private val storage: mutable.Map[MockId, Mock] = mutable.Map[MockId, Mock]()
+}
+
 class MockRepository {
 
-  private val storage: mutable.Map[MockId, Mock] = mutable.Map[MockId, Mock]()
+  def findAll(): Map[MockId, Mock] = collection.immutable.Map(MockRepository.storage.toSeq: _*)
 
-  def findById(id: MockId): Option[Mock] = if(storage.contains(id)) Some(storage(id)) else None
+  def findById(id: MockId): Option[Mock] = if(MockRepository.storage.contains(id)) Some(MockRepository.storage(id)) else None
 
-  def save(mock: Mock): Unit = storage.put(mock.id, mock)
+  def save(mock: Mock): Unit = MockRepository.storage.put(mock.id, mock)
 
-  def reset(): Unit = storage.clear()
+  def reset(): Unit = MockRepository.storage.clear()
 }
 

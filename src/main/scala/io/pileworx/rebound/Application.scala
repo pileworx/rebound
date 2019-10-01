@@ -4,6 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import io.pileworx.rebound.application.ReboundService
+import io.pileworx.rebound.application.assembler.MockAssembler
 import io.pileworx.rebound.common.akka.AkkaImplicits
 import io.pileworx.rebound.common.akka.http.Cors
 import io.pileworx.rebound.common.velocity.TemplateEngine
@@ -20,7 +21,8 @@ object Application extends App with AkkaImplicits with Cors {
   val httpPort = if(sys.env.contains("HTTP_PORT")) sys.env("HTTP_PORT").asInstanceOf[Int] else 8585
   val engine = new TemplateEngine
   val repository = new MockRepository
-  val service = new ReboundService(repository, engine)
+  val assembler = new MockAssembler
+  val service = new ReboundService(repository, engine, assembler)
   val routes: Route = cors { new MockRoutes(service).routes ~ Route.seal(new ReboundRoutes(service).routes) }
   val serverBinding: Future[Http.ServerBinding] = Http().bindAndHandle(routes, "0.0.0.0", httpPort)
 
