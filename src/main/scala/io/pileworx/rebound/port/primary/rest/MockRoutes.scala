@@ -29,7 +29,6 @@ class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSu
   implicit val responseDtoFormat: JsonFormat[ResponseDto] = jsonFormat4(ResponseDto)
   implicit val mockDtoFormat: RootJsonFormat[MockDto] = jsonFormat3(MockDto)
 
-
   val acceptMessage = """{"status":"ACCEPTED"}"""
   val successMessage = """{"status":"SUCCESS"}"""
 
@@ -47,8 +46,7 @@ class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSu
       }
     } ~
     get {
-      val r = service.findAll()
-      complete(OK -> r)
+      complete(OK -> service.findAll())
     }
   }
 }

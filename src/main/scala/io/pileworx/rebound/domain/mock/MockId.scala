@@ -11,7 +11,6 @@ case class MockId(method: Method,
                   body: Option[String])
 
 object MockId {
-
   private val jsonParser = new JsonParser
 
   def apply(cmd: DefineMockCmd): MockId = {
@@ -25,7 +24,6 @@ object MockId {
 
     MockId(req.method, req.path, req.query, headers, formatBody(req.body))
   }
-
   def apply(request: HttpRequest, entity: Option[String]): MockId = {
     val headers = if(request.headers.nonEmpty)
       Some(request.headers

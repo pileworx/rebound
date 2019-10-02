@@ -35,7 +35,6 @@ object Mock {
         case _ => Response(resp)
       }
     }
-
     Mock(MockId(cmd), cmd.scenario, mutable.MutableList(responses.toArray:_*))
   }
 }
