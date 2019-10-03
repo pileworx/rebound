@@ -4,6 +4,7 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCodes}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import io.pileworx.rebound.application.ReboundService
+import io.pileworx.rebound.application.assembler.MockAssembler
 import io.pileworx.rebound.common.velocity.TemplateEngine
 import io.pileworx.rebound.domain.MockRepository
 import io.pileworx.rebound.port.primary.rest.{MockRoutes, ReboundRoutes}
@@ -12,7 +13,8 @@ import org.scalatest.{Matchers, WordSpec}
 class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
   val engine = new TemplateEngine
   val repository = new MockRepository
-  val service = new ReboundService(repository, engine)
+  val assembler = new MockAssembler
+  val service = new ReboundService(repository, engine, assembler)
   val reboundRoute = new ReboundRoutes(service)
   val mockRoute = new MockRoutes(service)
 
@@ -28,6 +30,10 @@ class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
       |      "headers": [
       |        {
       |          "name": "accept",
+      |          "value": "application/hal+json"
+      |        },
+      |        {
+      |          "name": "content-type",
       |          "value": "application/json"
       |        }
       |      ],
@@ -39,8 +45,8 @@ class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
       |      "status": 200,
       |      "headers": [
       |        {
-      |          "name": "accept",
-      |          "value": "application/json"
+      |          "name": "content-type",
+      |          "value": "application/hal+json"
       |        }
       |      ],
       |      "body": "{\"foo\":\"$bar\"}",
@@ -52,8 +58,8 @@ class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
       |      "status": 200,
       |      "headers": [
       |        {
-      |          "name": "accept",
-      |          "value": "application/json"
+      |          "name": "content-type",
+      |          "value": "application/hal+json"
       |        }
       |      ],
       |      "body": "{\"foo\":\"bar\"}"
@@ -72,7 +78,8 @@ class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
 
     "retrieve first response" in {
       Put("/foo/bar?foo=bar&bar=baz", "{\"foo\":\"bar\"}") ~>
-        addHeader(RawHeader("Accept", "application/json")) ~>
+        addHeader(RawHeader("Accept", "application/hal+json")) ~>
+        addHeader(RawHeader("Content-Type", "application/json")) ~>
         reboundRoute.routes ~> check {
 
         status shouldEqual StatusCodes.OK
@@ -82,11 +89,21 @@ class IntegrationSpec extends WordSpec with Matchers with ScalatestRouteTest {
 
     "retrieve second response" in {
       Put("/foo/bar?foo=bar&bar=baz", "{\"foo\":\"bar\"}") ~>
-        addHeader(RawHeader("Accept", "application/json")) ~>
+        addHeader(RawHeader("Accept", "application/hal+json")) ~>
+        addHeader(RawHeader("Content-Type", "application/json")) ~>
         reboundRoute.routes ~> check {
 
         status shouldEqual StatusCodes.OK
         responseAs[String] should include("bar")
+      }
+    }
+
+    "list all mocks" in {
+      Get("/mock") ~>  mockRoute.routes ~> check {
+
+        status shouldBe StatusCodes.OK
+        val r = responseAs[String]
+        r.contains("when")
       }
     }
   }

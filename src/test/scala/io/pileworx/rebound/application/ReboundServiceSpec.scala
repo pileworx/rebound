@@ -20,7 +20,7 @@ class ReboundServiceSpec extends WordSpec with Matchers with MockFactory {
     "send response and values to template engine and store data" in {
       val engineMock = mock[TemplateEngine]
       val repository = mock[MockRepository]
-      val service = new ReboundService(repository, engineMock)
+      val service = new ReboundService(repository, engineMock, null)
 
       (repository.save _).expects(*).returns(Unit)
 
@@ -33,7 +33,7 @@ class ReboundServiceSpec extends WordSpec with Matchers with MockFactory {
       val ar = mock[Mock]
       val response = Some(stub[Response])
       val repository = mock[MockRepository]
-      val service = new ReboundService(repository, null)
+      val service = new ReboundService(repository, null, null)
 
       (repository.findById _).expects(id).returning(Some(ar))
       (ar.nextResponse _).expects().returns(response)
@@ -45,7 +45,7 @@ class ReboundServiceSpec extends WordSpec with Matchers with MockFactory {
     "return None if a response is not found" in {
       val id = mock[MockId]
       val repository = mock[MockRepository]
-      val service = new ReboundService(repository, null)
+      val service = new ReboundService(repository, null, null)
 
       (repository.findById _).expects(id).returning(None)
 
@@ -55,7 +55,7 @@ class ReboundServiceSpec extends WordSpec with Matchers with MockFactory {
 
     "reset repository when clear is called" in {
       val repository = mock[MockRepository]
-      val service = new ReboundService(repository, null)
+      val service = new ReboundService(repository, null, null)
 
       (repository.reset _).expects().returning(Unit)
 

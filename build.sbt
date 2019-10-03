@@ -1,4 +1,4 @@
-lazy val reboundVersion = "0.2.0"
+lazy val reboundVersion = "0.2.1-SNAPSHOT"
 lazy val akkaHttpVersion = "10.1.8"
 lazy val akkaVersion = "2.5.22"
 lazy val velocityVersion = "2.1"
@@ -27,7 +27,7 @@ lazy val root = (project in file("."))
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
       "com.google.code.gson" % "gson" % "2.8.5",
-      "ch.qos.logback" % "logback-classic" % "1.2.3" % Runtime,
+      "ch.qos.logback" % "logback-classic" % "1.2.3",
       "org.apache.velocity" % "velocity-engine-core" % velocityVersion,
 
       "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,

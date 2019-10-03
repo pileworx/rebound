@@ -13,17 +13,13 @@ trait Cors {
     `Access-Control-Max-Age`(3600),
     `Access-Control-Allow-Headers`("Origin", "x-requested-with", "Content-Type", "Accept", "Authorization", "Allow")
   )
-
-  private def addAccessControlHeaders: Directive0 = {
-    respondWithHeaders(corsResponseHeaders)
-  }
-
-  private def preFlightRequestHandler: Route = options {
-    complete(HttpResponse(StatusCodes.OK).
-      withHeaders(`Access-Control-Allow-Methods`(HEAD, OPTIONS, POST, PUT, GET, DELETE, PATCH)))
-  }
+  private val addAccessControlHeaders: Directive0 = respondWithHeaders(corsResponseHeaders)
 
   def cors(r: Route): Route = addAccessControlHeaders {
     preFlightRequestHandler ~ r
+  }
+  private def preFlightRequestHandler: Route = options {
+    complete(HttpResponse(StatusCodes.OK).
+      withHeaders(`Access-Control-Allow-Methods`(HEAD, OPTIONS, POST, PUT, GET, DELETE, PATCH)))
   }
 }
