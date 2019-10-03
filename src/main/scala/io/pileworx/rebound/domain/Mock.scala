@@ -11,7 +11,8 @@ case class Mock(id: MockId,
                 responses: mutable.Seq[Response],
                 executed: Boolean = false) {
   def nextResponse(): Option[Response] = {
-    if (responses.length > 1) {
+    if (responses.length == 1) responses.headOption
+    else {
       val resp = responses.find(r => !r.used)
       resp match {
         case Some(r) =>
@@ -19,8 +20,6 @@ case class Mock(id: MockId,
           Some(r)
         case _ => None
       }
-    } else {
-      responses.headOption
     }
   }
 }
@@ -36,7 +35,6 @@ object Mock {
         case _ => Response(resp)
       }
     }
-
     Mock(MockId(cmd), cmd.scenario, mutable.MutableList(responses.toArray:_*))
   }
 }
