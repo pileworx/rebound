@@ -1,7 +1,6 @@
 package io.pileworx.rebound.port.primary.rest
 
 import java.util.UUID
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model._

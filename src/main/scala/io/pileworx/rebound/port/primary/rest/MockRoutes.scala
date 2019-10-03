@@ -1,33 +1,23 @@
 package io.pileworx.rebound.port.primary.rest
 
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import akka.actor.ActorSystem
+import akka.event.{LogSource, Logging}
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 import io.pileworx.rebound.application.ReboundService
-import io.pileworx.rebound.application.dto.{MockDto, RequestDto, ResponseDto}
 import io.pileworx.rebound.common.akka.AkkaImplicits
-import io.pileworx.rebound.domain.command.{DefineMockCmd, DefineRequestCmd, DefineResponseCmd, When}
-import io.pileworx.rebound.domain.mock.{Header, Method}
-import spray.json._
+import io.pileworx.rebound.domain.command.DefineMockCmd
+import io.pileworx.rebound.port.primary.rest.protocol.MockProtocol
 
-class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSupport with DefaultJsonProtocol {
-
-  implicit val methodFormat: RootJsonFormat[Method] = new RootJsonFormat[Method] {
-    def read(value: JsValue): Method = Method(value.asInstanceOf[JsString].value)
-    def write(method: Method): JsValue = JsString(method.value)
+class MockRoutes(service: ReboundService) extends AkkaImplicits with MockProtocol {
+  implicit val logSourceType: LogSource[MockRoutes] = new LogSource[MockRoutes] {
+    override def genString(a: MockRoutes) = "mock-route"
+    override def genString(a: MockRoutes, s: ActorSystem) = s"mock-route,$s"
   }
-  val headerApply: (String, String) => Header = Header.apply
-  implicit val headerFormat: JsonFormat[Header] = jsonFormat2(headerApply)
-  implicit val responseFormat: JsonFormat[DefineResponseCmd] = jsonFormat4(DefineResponseCmd)
-  implicit val defineRequestCmd: JsonFormat[DefineRequestCmd] = jsonFormat5(DefineRequestCmd)
-  implicit val whenFormat: JsonFormat[When] = jsonFormat1(When)
-  implicit val defineMockCmdFormat: RootJsonFormat[DefineMockCmd] = jsonFormat3(DefineMockCmd)
-  implicit val requestDtoFormat: JsonFormat[RequestDto] = jsonFormat5(RequestDto)
-  implicit val responseDtoFormat: JsonFormat[ResponseDto] = jsonFormat4(ResponseDto)
-  implicit val mockDtoFormat: RootJsonFormat[MockDto] = jsonFormat3(MockDto)
+  val log = Logging(system, this)
 
   val acceptMessage = """{"status":"ACCEPTED"}"""
   val successMessage = """{"status":"SUCCESS"}"""
@@ -36,6 +26,7 @@ class MockRoutes(service: ReboundService) extends AkkaImplicits with SprayJsonSu
     delete {
       complete {
         service.clear()
+        log.info("All Mocks were cleared.")
         HttpEntity(ContentTypes.`application/json`, successMessage)
       }
     } ~
