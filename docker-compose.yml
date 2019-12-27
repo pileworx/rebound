@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  rebound:
+    image: pileworx/rebound:0.2.2-SNAPSHOT
+    restart: always
+    ports:
+      - 8585:8585
+    networks:
+      - rebound-net
+    environment:
+      - 'ALLOW_CREDENTIALS=false'
+      - 'ALLOWED_ORIGINS_1=http://test.com'
+      - 'ALLOWED_ORIGINS_2=http://localhost:4200'
+      - 'ALLOWED_HEADERS_1=None'
+      - 'ALLOWED_HEADERS_2=Some'
+      - 'ALLOWED_METHODS_1=PUT'
+      - 'ALLOWED_METHODS_2=POST'
+      - 'MAX_AGE=1200'
+networks:
+  rebound-net:
