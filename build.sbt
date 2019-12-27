@@ -1,4 +1,4 @@
-lazy val reboundVersion = "0.2.2-SNAPSHOT"
+lazy val reboundVersion = "0.2.2"
 lazy val akkaHttpVersion = "10.1.11"
 lazy val akkaVersion = "2.6.1"
 lazy val velocityVersion = "2.1"
