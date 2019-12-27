@@ -5,7 +5,8 @@ import akka.http.scaladsl.model.headers.HttpOriginRange.Default
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.headers._
-import com.typesafe.config.{Config, ConfigFactory}
+import akka.http.scaladsl.model.HttpMethods._
+import com.typesafe.config.{Config, ConfigException, ConfigFactory}
 
 import collection.JavaConverters._
 import scala.collection.immutable
@@ -32,25 +33,42 @@ object Cors {
   val config: Config = ConfigFactory.load()
 
   def allowedOrigins(): `Access-Control-Allow-Origin` = {
-    val origins = config.getStringList("cors.allowed-origins").asScala
-    if (origins.isEmpty || origins.head == "*")
-      `Access-Control-Allow-Origin`.*
-    else
+    try {
+      val origins = config.getStringList("cors.allowed-origins").asScala
       `Access-Control-Allow-Origin`(Default(immutable.Seq(origins.map(o => HttpOrigin(o)): _*)))
+    } catch {
+      case _: ConfigException => `Access-Control-Allow-Origin`.*
+    }
   }
 
   def allowCredentials(): `Access-Control-Allow-Credentials` = {
-    `Access-Control-Allow-Credentials`(config.getBoolean("cors.allow-credentials"))
+    try {
+      `Access-Control-Allow-Credentials`(config.getBoolean("cors.allow-credentials"))
+    } catch {
+      case _: ConfigException => `Access-Control-Allow-Credentials`(true)
+    }
   }
 
   def allowedMethod(): `Access-Control-Allow-Methods` = {
-    `Access-Control-Allow-Methods`(immutable.Seq(config.getStringList("cors.allowed-methods").asScala.map(m => HttpMethods.getForKey(m).get): _*))
+    try {
+      `Access-Control-Allow-Methods`(immutable.Seq(config.getStringList("cors.allowed-methods").asScala.map(m => HttpMethods.getForKey(m).get): _*))
+    } catch {
+      case _: ConfigException => `Access-Control-Allow-Methods`(POST, GET, OPTIONS, DELETE, HEAD, PUT, PATCH)
+    }
   }
 
   def maxAge(): `Access-Control-Max-Age` = {
-    `Access-Control-Max-Age`(config.getLong("cors.max-age"))
+    try {
+      `Access-Control-Max-Age`(config.getLong("cors.max-age"))
+    } catch {
+      case _: ConfigException => `Access-Control-Max-Age`(3600)
+    }
   }
   def allowedHeaders(): `Access-Control-Allow-Headers` = {
-    `Access-Control-Allow-Headers`(immutable.Seq(config.getStringList("cors.allowed-headers").asScala: _*))
+    try {
+      `Access-Control-Allow-Headers`(immutable.Seq(config.getStringList("cors.allowed-headers").asScala: _*))
+    } catch {
+      case _: ConfigException => `Access-Control-Allow-Headers`("Origin", "x-requested-with", "Content-Type", "Accept", "Authorization", "Allow")
+    }
   }
 }
