@@ -2,7 +2,6 @@ package io.pileworx.rebound.common.akka.http
 
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.StatusCodes.Accepted
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import io.pileworx.rebound.application.ReboundService
@@ -26,7 +25,7 @@ class CorsSpec extends WordSpec with Matchers with ScalatestRouteTest with MockF
         header("Access-Control-Allow-Credentials") shouldEqual Some(`Access-Control-Allow-Credentials`(true))
         header("Access-Control-Max-Age") shouldEqual Some(`Access-Control-Max-Age`(3600))
         header("Access-Control-Allow-Headers") shouldEqual Some(`Access-Control-Allow-Headers`("Origin", "x-requested-with", "Content-Type", "Accept", "Authorization", "Allow"))
-        header("Access-Control-Allow-Methods") shouldEqual Some(`Access-Control-Allow-Methods`(HEAD, OPTIONS, POST, PUT, GET, DELETE, PATCH))
+        header("Access-Control-Allow-Methods") shouldEqual Some(`Access-Control-Allow-Methods`(POST, GET, OPTIONS, DELETE, HEAD, PUT, PATCH))
       }
     }
   }
