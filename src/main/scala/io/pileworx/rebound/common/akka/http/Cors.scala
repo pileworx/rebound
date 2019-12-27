@@ -44,7 +44,7 @@ object Cors {
   }
 
   def allowedMethod(): `Access-Control-Allow-Methods` = {
-    `Access-Control-Allow-Methods`(immutable.Seq(config.getStringList("cors.allowed-methods").asScala.map(m => HttpMethod.custom(m)): _*))
+    `Access-Control-Allow-Methods`(immutable.Seq(config.getStringList("cors.allowed-methods").asScala.map(m => HttpMethods.getForKey(m).get): _*))
   }
 
   def maxAge(): `Access-Control-Max-Age` = {
